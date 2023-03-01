@@ -83,7 +83,12 @@ class DataEncoder:
     past_street_histories = [histories for histories in all_street_histories if any([e is not None for e in histories])]
     current_street_histories = [player.action_histories for player in table.seats.players]
     street_histories = past_street_histories + [current_street_histories]
-    street_histories = [self.__order_histories(table.sb_pos(), histories) for histories in street_histories]
+    if len(table.seats.players) == 2:
+        # in Heads-Up after PreFlop, the BigBlind is the first to make an action
+        start_positions = [table.sb_pos()] + [table.bb_pos()] * 3
+    else:
+        start_positions = [table.sb_pos()] * 4
+    street_histories = [self.__order_histories(pos, histories) for histories, pos in zip(street_histories, start_positions)]
     street_name = ["preflop", "flop", "turn", "river"]
     action_histories = { name:histories for name, histories in zip(street_name, street_histories) }
     return { "action_histories": action_histories }

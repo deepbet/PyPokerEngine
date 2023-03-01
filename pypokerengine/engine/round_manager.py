@@ -96,16 +96,31 @@ class RoundManager:
   def __flop(self, state):
     for card in state["table"].deck.draw_cards(3):
       state["table"].add_community_card(card)
+
+    # BB goes first in Heads-Up
+    if len(state['table'].seats.players) == 2:
+      if type(state["next_player"]) is int:
+        state["next_player"] = state["table"].next_ask_waiting_player_pos(state["next_player"])
     return self.__forward_street(state)
 
   @classmethod
   def __turn(self, state):
     state["table"].add_community_card(state["table"].deck.draw_card())
+
+    # BB goes first in Heads-Up
+    if len(state['table'].seats.players) == 2:
+      if type(state["next_player"]) is int:
+        state["next_player"] = state["table"].next_ask_waiting_player_pos(state["next_player"])
     return self.__forward_street(state)
 
   @classmethod
   def __river(self, state):
     state["table"].add_community_card(state["table"].deck.draw_card())
+
+    # BB goes first in Heads-Up
+    if len(state['table'].seats.players) == 2:
+      if type(state["next_player"]) is int:
+        state["next_player"] = state["table"].next_ask_waiting_player_pos(state["next_player"])
     return self.__forward_street(state)
 
   @classmethod
